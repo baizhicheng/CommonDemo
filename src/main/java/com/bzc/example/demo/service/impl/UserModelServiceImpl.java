@@ -1,5 +1,6 @@
 package com.bzc.example.demo.service.impl;
 
+import com.bzc.example.demo.bean.ExportUserModel;
 import com.bzc.example.demo.bean.UserModel;
 import com.bzc.example.demo.dao.UserModelMapper;
 import com.bzc.example.demo.service.UserModelService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +86,30 @@ public class UserModelServiceImpl implements UserModelService {
     @Override
     public UserModel getUserModelById(String id){
         return dao.getUserModelById(id);
+    }
+
+    //查询所有记录(List)
+    @Override
+    public List<UserModel> getList(UserModel user){
+        return dao.getList(user);
+    }
+
+    //导出数据
+    @Override
+    public List<ExportUserModel> getExportList(List<UserModel> list){
+        List<ExportUserModel> exports = new ArrayList<>();
+
+        for (UserModel userModel : list) {
+            ExportUserModel export = new ExportUserModel();
+
+            export.setId(userModel.getId());
+            export.setUsername(userModel.getUsername());
+            export.setAge(userModel.getAge());
+
+            exports.add(export);
+        }
+
+        return exports;
     }
 
 }

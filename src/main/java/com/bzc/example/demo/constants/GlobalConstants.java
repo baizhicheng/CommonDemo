@@ -157,9 +157,9 @@ public class GlobalConstants {
 
 
     /**
-     * 传输设备导出标题
+     * 导出标题
      */
-    public static final String[] SHEET_EQUIPMENT_TITLE = {"资源名称","全局名称","生产厂家","设备名称","所属系统","运行状态","所属站点","维护单位","使用寿命（个月）","投运日期"};
+    public static final String[] SHEET_TITLE = {"ID","用户名","年龄"};
 
     public static final BigDecimal ZERO = new BigDecimal(0);
     public static final BigDecimal DAYS_COUNT_OF_YEAR = new BigDecimal(365);
