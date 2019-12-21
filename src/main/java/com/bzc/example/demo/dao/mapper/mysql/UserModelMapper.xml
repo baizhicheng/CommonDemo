@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bzc.example.demo.dao.UserModelMapper">
+
+    <resultMap id="UserMap" type="com.bzc.example.demo.bean.UserModel">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="age" jdbcType="VARCHAR" property="age"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.bzc.example.demo.bean.UserModel">
+        insert into usermodel (id,username,age) values (#{id},#{username},#{age})
+    </insert>
+
+    <delete id="delete" parameterType="String">
+        delete from usermodel where id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.bzc.example.demo.bean.UserModel">
+        update usermodel set username = #{username},age = #{age} where id = #{id}
+    </update>
+
+    <select id="getList" resultMap="UserMap" >
+        select id,username,age from usermodel
+        where 1=1
+        <if test='username != null and username != ""'>
+            AND  username = #{username}
+        </if>
+        <if test='age != null and age != ""'>
+            AND  age = #{age}
+        </if>
+    </select>
+
+    <select id="getUserModelById" resultMap="UserMap" >
+        select id,username,age from usermodel where id = #{id}
+    </select>
+
+</mapper>
