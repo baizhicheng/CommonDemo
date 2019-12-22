@@ -35,4 +35,36 @@
         select id,username,age from usermodel where id = #{id}
     </select>
 
+    <insert id="insertByExcel" parameterType="java.util.List">
+        insert into usermodel (id,username,age)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.username},#{item.age})
+        </foreach>
+    </insert>
+
+    <update  id="updateByExcel" parameterType="java.util.List">
+        update usermodel
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="username = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.username!=null">
+                        when id=#{item.id} then #{item.username}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="age = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.age!=null">
+                        when id=#{item.id} then #{item.age}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where
+        <foreach collection="list" separator="or" item="item" index="index" >
+        id=#{item.id}
+        </foreach>
+    </update >
+
 </mapper>

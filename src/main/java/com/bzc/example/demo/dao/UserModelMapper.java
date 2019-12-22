@@ -22,10 +22,19 @@ public interface UserModelMapper {
     //修改
     void update(UserModel user);
 
-    //查询所有记录
+    //查询所有记录(有参数)
     List<UserModel> getList(UserModel user);
+
+    //查询所有记录(无参数)
+    List<UserModel> getList();
 
     //根据ID获取对象
     UserModel getUserModelById(String id);
+
+    //从Excel录入数据
+    void insertByExcel(List<UserModel> list);
+
+    //从Excel更新数据
+    void updateByExcel(List<UserModel> list);
 
 }

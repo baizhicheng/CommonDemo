@@ -4,8 +4,6 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import sun.misc.BASE64Encoder;
 
 import java.beans.PropertyDescriptor;
@@ -22,8 +20,8 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class FreeMarkerUtils<T> {
-
-    private static final String DOCUMENT_HOME = "../../../document/"; // 生成后的文档存放路径
+    private static String ftlpath="/CommonDemo/src/main/resources/templates";
+    private static final String DOCUMENT_HOME = "../document/"; // 生成后的文档存放路径
 
     private static final String IMAGE_REGEX = "\\w+\\.(jpg|gif|bmp|png|jpeg)"; // 图片格式的文件
 
@@ -43,8 +41,10 @@ public class FreeMarkerUtils<T> {
     public static void generateReports(Map dataMap, String templateName, String fileName) throws IOException {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_22); // 创建配置实例 
         configuration.setDefaultEncoding("UTF-8");
-        Resource resource = new ClassPathResource("template/"); // ftl 模板文件统一放至 template 包下面
-        String directory = resource.getURL().getPath();
+//        Resource resource = new ClassPathResource("template/"); // ftl 模板文件统一放至 template 包下面
+//        String directory = resource.getURL().getPath();
+        File lj = new File("..");
+        String directory =lj.getCanonicalPath()+ftlpath;
         configuration.setDirectoryForTemplateLoading(new File(directory)); // 模板指定的路径
         Template template = configuration.getTemplate(templateName); // 获取模板 
         String filepath = DOCUMENT_HOME + File.separator + fileName;
@@ -91,8 +91,8 @@ public class FreeMarkerUtils<T> {
     public static Map<String, Object> parseImages(String listName,String imageName ) throws IOException {
         Map<String, Object> dataMap = new HashMap<>();
         List<String> images = new ArrayList<>();
-        Resource resource = new ClassPathResource("template/");
-        String directory = resource.getURL().getPath();
+        File lj = new File("..");
+        String directory =lj.getCanonicalPath()+ftlpath;
         File[] dir = new File(directory).listFiles();
         if (null != dir && dir.length > 0) {
             if (Pattern.matches(IMAGE_REGEX,imageName)) {
@@ -156,12 +156,46 @@ public class FreeMarkerUtils<T> {
      * @return 可以写入模板的键值对
      */
     public Map<String, Object> parseCollection(String collectionName, List<T> data) throws Exception {
-        Map<String, Object> dataMap = new HashMap<>();
         List<Map<String, Object>> collectionData = new ArrayList<>();
         for (T target : data) {
             collectionData.add(this.parseSingleBean(target));
         }
+        Map<String, Object> dataMap = new HashMap<>();
         dataMap.put(collectionName, collectionData);
+        return dataMap;
+    }
+
+    /**
+     * 循环生成多个表格
+     * @param contextName 集合命名
+     * @param data 数据
+     * @return map 包含每个子表格的小 map
+     * @throws Exception 抛出异常
+     */
+    public Map<String, Object> parseComplexCollection(String contextName, List<List<T>> data, String titleName, List<T> titles) throws Exception {
+        List<Map<String, Object>> collectionData = new ArrayList<>();
+        // 如果存在标题
+        if (null != titles && !StringUtils.isNullOrEmptyString(titleName)) {
+            List<Map<String, Object>> results = new ArrayList<>();
+            for (int i = 0; i < titles.size(); i ++) {
+                Map<String, Object> retVal = this.parseSingleBean(titles.get(i));
+                List<Map<String, Object>> contentList = new ArrayList<>();
+                for (T target : data.get(i)) {
+                    contentList.add(this.parseSingleBean(target));
+                }
+                retVal.put("content", contentList);
+                results.add(retVal);
+            }
+            Map<String, Object> middleMap = new HashMap<>();
+            middleMap.put(titleName, results);
+            collectionData.add(middleMap);
+        } else {
+            for (List<T> outer : data) {
+                collectionData.add(this.parseCollection(contextName, outer)); // 单独的每一张表格
+            }
+        }
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put(contextName, collectionData);
         return dataMap;
     }
 

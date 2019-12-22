@@ -2,7 +2,9 @@ package com.bzc.example.demo.service;
 
 import com.bzc.example.demo.bean.ExportUserModel;
 import com.bzc.example.demo.bean.UserModel;
+import org.apache.poi.ss.usermodel.Workbook;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -32,5 +34,8 @@ public interface UserModelService {
 
     //导出数据
     List<ExportUserModel> getExportList(List<UserModel> list);
+
+    //导入数据
+    Map<String, Object> importTable(Workbook workbook, String filename, HttpServletRequest request);
 
 }

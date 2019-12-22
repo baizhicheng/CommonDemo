@@ -157,9 +157,14 @@ public class GlobalConstants {
 
 
     /**
-     * 导出标题
+     * 导出Excel标题
      */
-    public static final String[] SHEET_TITLE = {"ID","用户名","年龄"};
+    public static final String[] SHEET_EXPORT_TITLE = {"ID","用户名","年龄"};
+
+    /**
+     * 导入Excel标题
+     */
+    public static final String[] SHEET_IMPORT_TITLE = {"ID","用户名","年龄"};
 
     public static final BigDecimal ZERO = new BigDecimal(0);
     public static final BigDecimal DAYS_COUNT_OF_YEAR = new BigDecimal(365);
