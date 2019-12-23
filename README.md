@@ -1,6 +1,6 @@
-<center># CommonDemo</center>
-Some common code features of SpringBoot.
+#CommonDemo
 
+Some common code features of SpringBoot.
 Database:Mysql
 
 ## Functions implemented：
